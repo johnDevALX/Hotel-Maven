@@ -18,22 +18,7 @@ public class BookingServiceImpl implements BookingService{
     private final RoomRepository roomRepository;
     private final BookingRepository bookingRepository;
 
-    @Override
-    public BookingResponseVO saveBooking(BookingDto bookingDto) {
-        Booking booking = Booking.builder()
-                .customer(bookingDto.getCustomer())
-                .room(bookingDto.getRoom())
-                .checkIn(bookingDto.getCheckIn())
-                .checkOut(bookingDto.getCheckOut())
-                .totalDays(bookingDto.getCheckOut().getDayOfWeek().getValue() - bookingDto.getCheckIn().getDayOfWeek().getValue())
-                .build();
-         bookingRepository.save(booking);
-        Room room = roomRepository.findById(bookingDto.getRoom().getId()).get();
-        room.setAvailability(Availability.OCCUPIED);
-        roomRepository.save(room);
-        return mapToBookingResponse(booking);
 
-    }
 
     private BookingResponseVO mapToBookingResponse(Booking booking) {
         return BookingResponseVO.builder()

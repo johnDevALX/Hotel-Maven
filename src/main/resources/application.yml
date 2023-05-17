@@ -1,0 +1,14 @@
+server:
+  port: 8000
+spring:
+  application:
+    name: Hotel-Management
+  datasource:
+    url: jdbc:mysql://localhost:3306/hotel_project
+    username: root
+    password: EC199859vin$
+    driver-class-name: com.mysql.jdbc.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true

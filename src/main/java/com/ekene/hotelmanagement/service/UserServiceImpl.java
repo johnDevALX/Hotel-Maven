@@ -100,7 +100,7 @@ public class UserServiceImpl implements UserService{
                 .cost(roomDto.getCost())
                 .bed(roomDto.getBed())
                 .maxOccupants(roomDto.getMaxOccupants())
-                .availability(Availability.AVAILABLE)
+                .isAvailable(true)
                 .build();
 
         roomRepository.save(room);

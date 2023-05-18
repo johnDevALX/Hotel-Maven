@@ -7,12 +7,11 @@ import com.ekene.hotelmanagement.service.BookingService;
 import com.ekene.hotelmanagement.service.BookingServiceImpl;
 import com.ekene.hotelmanagement.utility.BaseController;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import static org.springframework.http.HttpStatus.CREATED;
+import static org.springframework.http.HttpStatus.OK;
 
 @RequiredArgsConstructor
 @RestController
@@ -20,9 +19,13 @@ import org.springframework.web.bind.annotation.RestController;
 public class BookingController extends  BaseController{
     private final BookingServiceImpl bookingServiceImpl;
 
-
-    @PostMapping
+    @PostMapping("save-booking")
     public ResponseEntity<?> saveBooking(@RequestBody BookingDto bookingDto){
-        return getAppResponse(HttpStatus.CREATED , "success" , bookingServiceImpl.saveBooking(bookingDto));
+        return getAppResponse(CREATED , "success" , bookingServiceImpl.saveBooking(bookingDto));
+    }
+
+    @GetMapping("")
+    public ResponseEntity<?> getAllBookings(){
+        return getAppResponse(OK, "Retrieved", bookingServiceImpl.getAllBookings());
     }
 }

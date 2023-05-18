@@ -1,6 +1,5 @@
 package com.ekene.hotelmanagement.model;
 
-import com.ekene.hotelmanagement.enums.Availability;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -21,6 +20,6 @@ public class Room extends BaseModel {
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(referencedColumnName = "id")
     private RoomType roomType;
-    @Enumerated(EnumType.STRING)
-    private Availability availability;
+//    private Availability availability;
+    private Boolean isAvailable;
 }

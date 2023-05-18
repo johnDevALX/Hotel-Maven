@@ -1,6 +1,5 @@
 package com.ekene.hotelmanagement.service;
 
-import com.ekene.hotelmanagement.enums.Availability;
 import com.ekene.hotelmanagement.model.Booking;
 import com.ekene.hotelmanagement.model.Room;
 import com.ekene.hotelmanagement.repository.BookingRepository;
@@ -9,7 +8,11 @@ import com.ekene.hotelmanagement.repository.RoomRepository;
 import com.ekene.hotelmanagement.payload.BookingDto;
 import com.ekene.hotelmanagement.response.BookingResponseVO;
 import lombok.RequiredArgsConstructor;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import java.time.LocalDate;
+import java.time.chrono.ChronoLocalDateTime;
+import java.util.List;
 
 @RequiredArgsConstructor
 @Service
@@ -29,10 +32,27 @@ public class BookingServiceImpl implements BookingService{
                 .build();
          bookingRepository.save(booking);
         Room room = roomRepository.findById(bookingDto.getRoom().getId()).get();
-        room.setAvailability(Availability.OCCUPIED);
+        room.setIsAvailable(false);
         roomRepository.save(room);
         return mapToBookingResponse(booking);
+    }
 
+    @Override
+    public List<Booking> getAllBookings() {
+        return bookingRepository.findAll();
+    }
+
+    @Scheduled(cron = "59 59 23 * * ?")
+    public void updateAvailability(){
+        List<Booking> allBooking = bookingRepository.findAll();
+        for (Booking booking: allBooking) {
+            if (booking.getCheckOut().isBefore(ChronoLocalDateTime.from(LocalDate.now())))    {
+                System.out.println(booking.getRoom().getTitle() + "Still Occupied");
+            }else {
+                Room room = roomRepository.findById(booking.getRoom().getId()).get();
+                room.setIsAvailable(true);
+            }
+        }
     }
 
     private BookingResponseVO mapToBookingResponse(Booking booking) {

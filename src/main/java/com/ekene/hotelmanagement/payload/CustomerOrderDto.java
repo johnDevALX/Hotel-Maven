@@ -8,7 +8,10 @@ import lombok.*;
 @NoArgsConstructor
 @ToString
 @Builder
-public class ServiceCategoryDto {
+public class CustomerOrderDto {
     private Long id;
-    private String title;
+    private String customerEmail;
+    private String roomTitle;
+    private String itemName;
+    private int numberOfItem;
 }

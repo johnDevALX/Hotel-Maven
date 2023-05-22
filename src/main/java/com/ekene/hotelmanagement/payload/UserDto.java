@@ -5,6 +5,7 @@ import com.ekene.hotelmanagement.enums.Role;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.util.Date;
 
 @Setter
 @Getter
@@ -17,7 +18,7 @@ public class UserDto {
     private String lastName;
     private String email;
     private String gender;
-    private LocalDate DOB;
+    private Date DOB;
     private int mobile;
     private String nationality;
     private String street;

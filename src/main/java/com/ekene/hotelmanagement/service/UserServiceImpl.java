@@ -1,6 +1,10 @@
 package com.ekene.hotelmanagement.service;
 
+import com.cloudinary.Cloudinary;
+import com.cloudinary.utils.ObjectUtils;
+import com.ekene.hotelmanagement.config.AppConfig;
 import com.ekene.hotelmanagement.enums.Availability;
+import com.ekene.hotelmanagement.enums.Role;
 import com.ekene.hotelmanagement.model.Room;
 import com.ekene.hotelmanagement.model.RoomType;
 import com.ekene.hotelmanagement.model.User;
@@ -14,12 +18,24 @@ import com.ekene.hotelmanagement.payload.UserDto;
 import com.ekene.hotelmanagement.response.RoomResponseVO;
 import com.ekene.hotelmanagement.response.RoomTypeResponseVO;
 import com.ekene.hotelmanagement.response.UserResponseVO;
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @RequiredArgsConstructor
 @Service
+@Slf4j
 public class UserServiceImpl implements UserService{
+    private final Cloudinary cloudinary;
     private final UserRepository userRepository;
     private final RoomTypeRepository roomTypeRepository;
     private final RoomRepository roomRepository;
@@ -52,15 +68,15 @@ public class UserServiceImpl implements UserService{
            response =  "Successfully deleted";
        }catch (IllegalArgumentException e){
            response = e.getMessage();
-           throw new IllegalArgumentException(e.getMessage());
+           throw new IllegalArgumentException(response);
        }
         return response;
     }
 
     @Override
-    public RoomTypeResponseVO addRoomType(RoomTypeDto roomTypeDto) {
+    public RoomTypeResponseVO addRoomType(MultipartFile image, RoomTypeDto roomTypeDto) {
         RoomType roomType = RoomType.builder()
-                .image(roomTypeDto.getImage())
+                .image(upload(image))
                 .title(roomTypeDto.getTitle())
                 .build();
 
@@ -69,9 +85,9 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public RoomTypeResponseVO updateRoomType(Long id, RoomTypeDto roomTypeDto) {
+    public RoomTypeResponseVO updateRoomType(Long id, MultipartFile image, RoomTypeDto roomTypeDto) {
         RoomType roomType1 = roomTypeRepository.findById(id).get();
-        roomType1.setImage(roomTypeDto.getImage());
+        roomType1.setImage(upload(image));
         roomType1.setTitle(roomTypeDto.getTitle());
         roomTypeRepository.save(roomType1);
         return mapToRoomTypeResponse(roomType1);
@@ -85,17 +101,17 @@ public class UserServiceImpl implements UserService{
             response = "Successfully deleted";
         } catch (IllegalArgumentException e){
             response = e.getMessage();
-            throw new IllegalArgumentException(e.getMessage());
+            throw new IllegalArgumentException(response);
         }
         return response;
     }
 
     @Override
-    public RoomResponseVO addRoom(RoomDto roomDto) {
-        RoomType roomType = roomTypeRepository.findById(roomDto.getRoomTypeDto().getId()).get();
+    public RoomResponseVO addRoom(MultipartFile image, RoomDto roomDto) {
+        RoomType roomType = roomTypeRepository.findByTitleIgnoreCase(roomDto.getRoomTypeDtoTitle()).get();
         Room room = Room.builder()
                 .title(roomDto.getTitle())
-                .image(roomDto.getImage())
+                .image(upload(image))
                 .roomType(roomType)
                 .cost(roomDto.getCost())
                 .bed(roomDto.getBed())
@@ -108,11 +124,11 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public RoomResponseVO updateRoom(Long id, RoomDto roomDto) {
+    public RoomResponseVO updateRoom(Long id, MultipartFile image, RoomDto roomDto) {
         Room room = roomRepository.findById(id).get();
-        RoomType roomType = roomTypeRepository.findById(roomDto.getRoomTypeDto().getId()).get();
+        RoomType roomType = roomTypeRepository.findByTitleIgnoreCase(roomDto.getRoomTypeDtoTitle()).get();
         room.setTitle(roomDto.getTitle());
-        room.setImage(roomDto.getImage());
+        room.setImage(upload(image));
         room.setRoomType(roomType);
         room.setCost(roomDto.getCost());
         room.setBed(roomDto.getBed());
@@ -130,7 +146,7 @@ public class UserServiceImpl implements UserService{
             response = "Successfully deleted";
         } catch (IllegalArgumentException e){
             response = e.getMessage();
-            throw new IllegalArgumentException(e.getMessage());
+            throw new IllegalArgumentException(response);
         }
         return response;
     }
@@ -162,5 +178,40 @@ public class UserServiceImpl implements UserService{
         return RoomTypeResponseVO.builder()
                 .title(roomType.getTitle())
                 .build();
+    }
+    private String upload(MultipartFile image){
+        try{
+            Map<?, ?> uploadResult = cloudinary.uploader().upload(image.getBytes(), ObjectUtils.emptyMap());
+            System.out.println("Map of cloudinary result ===========> " + uploadResult);
+            return uploadResult.get("secure_url").toString();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    @Scheduled(cron = "0 */5 * ? * *")
+    public void updateStaffWages(){
+        List<User> allUser = userRepository.findAll();
+        for (User user: allUser) {
+            if (user.getRole().equals(Role.ADMIN)){
+                user.setSalary(user.getSalary() + Role.ADMIN.getSalary());
+                System.out.println(user.getRole() + " salary Paid");
+            } else if (user.getRole().equals(Role.BARMAN)) {
+                user.setSalary(user.getSalary() + Role.BARMAN.getSalary());
+                System.out.println(user.getRole() + " salary Paid");
+            } else if (user.getRole().equals(Role.CHEF)) {
+                user.setSalary(user.getSalary() + Role.CHEF.getSalary());
+                System.out.println(user.getRole() + " salary Paid");
+            }else if (user.getRole().equals(Role.CLEANER)) {
+                user.setSalary(user.getSalary() + Role.CLEANER.getSalary());
+                System.out.println(user.getRole() + " salary Paid");
+            }else {
+                //user.getRole().equals(Role.SPA_MANAGER)
+                user.setSalary(user.getSalary() + Role.SPA_MANAGER.getSalary());
+                System.out.println(user.getRole() + " salary Paid");
+            }
+          //  userRepository.save(user);
+        }
+        System.out.println("All Salaries Paid =====> " + LocalDateTime.now());
+        userRepository.saveAll(allUser);
     }
 }

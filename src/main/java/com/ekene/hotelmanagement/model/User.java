@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.util.Date;
 
 @Setter
 @Getter
@@ -19,7 +20,7 @@ public class User extends BaseModel {
     @Column(unique = true)
     private String email;
     private String gender;
-    private LocalDate DOB;
+    private Date DOB;
     private int mobile;
     private String nationality;
     @Embedded

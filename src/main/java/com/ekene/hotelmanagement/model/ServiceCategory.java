@@ -1,5 +1,6 @@
 package com.ekene.hotelmanagement.model;
 
+import jakarta.persistence.Entity;
 import lombok.*;
 
 @Setter
@@ -8,7 +9,7 @@ import lombok.*;
 @NoArgsConstructor
 @ToString
 @Builder
+@Entity
 public class ServiceCategory extends BaseModel{
-    private String image;
     private String title;
 }

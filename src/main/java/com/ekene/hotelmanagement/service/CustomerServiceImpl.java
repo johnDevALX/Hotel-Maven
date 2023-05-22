@@ -36,7 +36,7 @@ public class CustomerServiceImpl implements CustomerService{
             response = "Successfully Deleted";
         } catch (IllegalArgumentException e){
             response = e.getMessage();
-            throw new IllegalArgumentException(e.getMessage());
+            throw new IllegalArgumentException(response);
         }
         return response;
     }

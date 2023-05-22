@@ -9,6 +9,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.OK;
 
@@ -30,8 +32,8 @@ public class UserController extends BaseController {
     }
 
     @PostMapping("addRoom")
-    public ResponseEntity<?> addRoom(@RequestBody RoomDto roomDto){
-        return getAppResponse(CREATED, "Success", userService.addRoom(roomDto));
+    public ResponseEntity<?> addRoom(@RequestBody RoomDto roomDto, @RequestPart MultipartFile image){
+        return getAppResponse(CREATED, "Success", userService.addRoom(image, roomDto));
     }
 
     @DeleteMapping("deleteRoom/{id}")
@@ -41,17 +43,17 @@ public class UserController extends BaseController {
     }
 
     @PutMapping("updateRoom/{id}")
-    public ResponseEntity<?> updateRoom(@PathVariable(value = "id") Long id, @RequestBody RoomDto roomDto){
-        return getAppResponse(OK, "Updated", userService.updateRoom(id, roomDto));
+    public ResponseEntity<?> updateRoom(@PathVariable(value = "id") Long id, @RequestPart MultipartFile image, @RequestBody RoomDto roomDto){
+        return getAppResponse(OK, "Updated", userService.updateRoom(id, image, roomDto));
     }
 
     @PostMapping("addRoomType")
-    public ResponseEntity<?> addRoomType(@RequestBody RoomTypeDto roomTypeDto){
-        return getAppResponse(CREATED, "Success", userService.addRoomType(roomTypeDto));
+    public ResponseEntity<?> addRoomType(@RequestParam RoomTypeDto roomTypeDto , @RequestPart MultipartFile image){
+        return getAppResponse(CREATED, "Success", userService.addRoomType(image, roomTypeDto));
     }
 
     @PutMapping("updateRoomType/{id}")
-    public ResponseEntity<?> updateRoomType (@PathVariable(value = "id") Long id, @RequestBody RoomTypeDto roomTypeDto){
-        return getAppResponse(OK, "Updated", userService.updateRoomType(id, roomTypeDto));
+    public ResponseEntity<?> updateRoomType (@PathVariable(value = "id") Long id, @RequestBody RoomTypeDto roomTypeDto, @RequestPart MultipartFile image){
+        return getAppResponse(OK, "Updated", userService.updateRoomType(id, image, roomTypeDto));
     }
 }

@@ -1,6 +1,7 @@
 package com.ekene.hotelmanagement.payload;
 
 import lombok.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @Setter
 @Getter
@@ -9,7 +10,5 @@ import lombok.*;
 @ToString
 @Builder
 public class RoomTypeDto {
-    private Long id;
-    private String image;
     private String title;
 }

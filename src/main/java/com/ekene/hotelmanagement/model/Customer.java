@@ -1,5 +1,6 @@
 package com.ekene.hotelmanagement.model;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import lombok.*;
@@ -15,6 +16,7 @@ import java.time.LocalDate;
 public class Customer extends BaseModel {
     private String firstName;
     private String lastName;
+    @Column(unique = true)
     private String email;
     private String gender;
     private LocalDate DOB;

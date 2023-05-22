@@ -1,10 +1,7 @@
 package com.ekene.hotelmanagement.response;
 
 import com.ekene.hotelmanagement.model.RoomType;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 @Getter
 @Setter

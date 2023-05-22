@@ -13,8 +13,8 @@ import java.time.LocalDateTime;
 @ToString
 @Builder
 public class BookingDto {
-    private Customer customer;
-    private Room room;
+    private String customerEmail;
+    private String roomTitle;
     private LocalDateTime checkIn;
     private LocalDateTime checkOut;
     private int totalDays;

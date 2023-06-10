@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("api/customer")
+@RequestMapping("/api/customer")
 public class CustomerController extends BaseController {
     private final CustomerServiceImpl customerService;
 

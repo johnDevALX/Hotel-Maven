@@ -1,6 +1,6 @@
 package com.ekene.hotelmanagement;
 
-import com.ekene.hotelmanagement.config.AppConfig;
+import com.ekene.hotelmanagement.config.cloudinary.AppConfig;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;

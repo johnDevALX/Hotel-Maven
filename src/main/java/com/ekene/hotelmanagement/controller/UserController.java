@@ -1,5 +1,6 @@
 package com.ekene.hotelmanagement.controller;
 
+import com.ekene.hotelmanagement.payload.AuthenticateRequest;
 import com.ekene.hotelmanagement.payload.RoomDto;
 import com.ekene.hotelmanagement.payload.RoomTypeDto;
 import com.ekene.hotelmanagement.payload.UserDto;
@@ -16,13 +17,19 @@ import static org.springframework.http.HttpStatus.OK;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("api/user")
+@RequestMapping("/api/user")
 public class UserController extends BaseController {
     private final UserServiceImpl userService;
 
-    @PostMapping("saveUser")
+    @PostMapping("/register")
     public ResponseEntity<?> saveUser(@RequestBody UserDto userDto){
         return getAppResponse(CREATED, "Success", userService.createUser(userDto));
+    }
+
+    @PostMapping("/authenticate")
+    public ResponseEntity<?> authenticateUser (@RequestBody AuthenticateRequest authenticateRequest){
+        System.out.println("AUTH REQUEST" + authenticateRequest);
+        return getAppResponse(OK, "Success", userService.authenticateUser(authenticateRequest));
     }
 
     @DeleteMapping("deleteUser/{id}")

@@ -1,5 +1,6 @@
 package com.ekene.hotelmanagement.service;
 
+import com.ekene.hotelmanagement.payload.AuthenticateRequest;
 import com.ekene.hotelmanagement.payload.RoomDto;
 import com.ekene.hotelmanagement.payload.RoomTypeDto;
 import com.ekene.hotelmanagement.payload.UserDto;
@@ -10,6 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 public interface UserService {
     UserResponseVO createUser(UserDto userDto);
+    UserResponseVO authenticateUser(AuthenticateRequest authenticateRequest);
     String deleteUser(Long id);
     RoomTypeResponseVO addRoomType(  MultipartFile image, RoomTypeDto roomTypeDto);
     RoomTypeResponseVO updateRoomType(Long id, MultipartFile image, RoomTypeDto roomTypeDto);

@@ -60,8 +60,8 @@ public class UserServiceImpl implements UserService{
                 .role(userDto.getRole())
                 .salary(0.0)
                 .nationality(userDto.getNationality())
-                .password(passwordEncoder.encode(userDto.getPassword()))
-//                .password((userDto.getPassword()))
+//                .password(passwordEncoder.encode(userDto.getPassword()))
+                .password((userDto.getPassword()))
                 .address(buildAddress(userDto))
                 .build();
         userRepository.save(user);
@@ -70,6 +70,8 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public UserResponseVO authenticateUser(AuthenticateRequest authenticateRequest) {
+        log.debug("AUTH REQUEST {}", authenticateRequest);
+        System.out.println("AUTH REQUEST  (from service) " + authenticateRequest);
         Authentication authentication;
         authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
@@ -77,9 +79,14 @@ public class UserServiceImpl implements UserService{
                         authenticateRequest.getPassword()
                 )
         );
+        log.debug("AUTH REQUEST {}", authenticateRequest);
+        System.out.println("AUTH OBJECT" + authentication);
         var user = userRepository.findByEmailIgnoreCase(authenticateRequest.getEmail())
                 .orElseThrow();
         SecurityContextHolder.getContext().setAuthentication(authentication);
+        log.debug("USER {}", authenticateRequest.getEmail());
+        System.out.println("AUTH USER    " + user);
+
         return mapToUserResponse(user);
     }
 

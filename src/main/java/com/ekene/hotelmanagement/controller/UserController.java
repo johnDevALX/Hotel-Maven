@@ -28,6 +28,7 @@ public class UserController extends BaseController {
 
     @PostMapping("/authenticate")
     public ResponseEntity<?> authenticateUser (@RequestBody AuthenticateRequest authenticateRequest){
+        System.out.println("AUTH REQUEST" + authenticateRequest);
         return getAppResponse(OK, "Success", userService.authenticateUser(authenticateRequest));
     }
 

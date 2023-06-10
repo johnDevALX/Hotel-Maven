@@ -26,17 +26,25 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             HttpServletRequest request, HttpServletResponse response,
             FilterChain filterChain) throws ServletException, IOException {
         String authorizationHeader = request.getHeader("Authorization");
-        String jwtToken;
-        String userEmail;
-        if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")){
-            filterChain.doFilter(request, response);
-            return;
+
+        System.out.println("AUTH HEADER from JWTAUTHFILTER class ---> " + authorizationHeader);
+
+        String jwtToken = null;
+        String userEmail = null;
+
+        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")){
+            jwtToken = authorizationHeader.substring(7);
+            userEmail = jwtUtil.extractUsername(jwtToken);
         }
-        jwtToken = authorizationHeader.substring(7);
-        userEmail = jwtUtil.extractUsername(jwtToken); //TODO extract user email from jwt token using JwtUtil
+        System.out.println("USER EMAIL from JWTAUTHFILTER class ---> " + userEmail);
+        System.out.println("USER jwtToken from JWTAUTHFILTER class ---> " + jwtToken);
+         //TODO extract user email from jwt token using JwtUtil
+
         if (userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null){
             UserDetails userDetails = customUserDetailsService.loadUserByUsername(userEmail);
+            System.out.println("USER DETAILS from JWTAUTHFILTER class ---> " + userDetails);
             if (jwtUtil.isTokenValid(jwtToken, userDetails)){
+                System.out.println("IS TOKEN VALID" + true);
                 UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
                         new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
                 usernamePasswordAuthenticationToken

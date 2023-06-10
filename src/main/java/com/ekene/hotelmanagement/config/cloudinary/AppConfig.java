@@ -1,4 +1,4 @@
-package com.ekene.hotelmanagement.config;
+package com.ekene.hotelmanagement.config.cloudinary;
 
 import lombok.*;
 import org.springframework.boot.context.properties.ConfigurationProperties;

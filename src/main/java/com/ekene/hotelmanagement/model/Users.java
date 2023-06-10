@@ -3,7 +3,6 @@ package com.ekene.hotelmanagement.model;
 import com.ekene.hotelmanagement.enums.Role;
 import jakarta.persistence.*;
 import lombok.*;
-import java.time.LocalDate;
 import java.util.Date;
 
 @Setter
@@ -12,8 +11,8 @@ import java.util.Date;
 @NoArgsConstructor
 @ToString
 @Builder
-//@Entity
-public class User extends BaseModel {
+@Entity
+public class Users extends BaseModel{
     private String firstName;
     private String lastName;
     @Column(unique = true)

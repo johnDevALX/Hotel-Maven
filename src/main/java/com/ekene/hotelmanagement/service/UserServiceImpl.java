@@ -2,32 +2,36 @@ package com.ekene.hotelmanagement.service;
 
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
-import com.ekene.hotelmanagement.config.AppConfig;
-import com.ekene.hotelmanagement.enums.Availability;
+import com.ekene.hotelmanagement.config.security.jwt.JwtUtil;
 import com.ekene.hotelmanagement.enums.Role;
-import com.ekene.hotelmanagement.model.Room;
-import com.ekene.hotelmanagement.model.RoomType;
-import com.ekene.hotelmanagement.model.User;
+import com.ekene.hotelmanagement.model.*;
+import com.ekene.hotelmanagement.payload.AuthenticateRequest;
 import com.ekene.hotelmanagement.repository.RoomRepository;
 import com.ekene.hotelmanagement.repository.RoomTypeRepository;
 import com.ekene.hotelmanagement.repository.UserRepository;
-import com.ekene.hotelmanagement.model.Address;
 import com.ekene.hotelmanagement.payload.RoomDto;
 import com.ekene.hotelmanagement.payload.RoomTypeDto;
 import com.ekene.hotelmanagement.payload.UserDto;
 import com.ekene.hotelmanagement.response.RoomResponseVO;
 import com.ekene.hotelmanagement.response.RoomTypeResponseVO;
 import com.ekene.hotelmanagement.response.UserResponseVO;
-import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.scheduling.annotation.Scheduled;
+//import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -39,10 +43,14 @@ public class UserServiceImpl implements UserService{
     private final UserRepository userRepository;
     private final RoomTypeRepository roomTypeRepository;
     private final RoomRepository roomRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final JwtUtil jwtUtil;
+    private final AuthenticationManager authenticationManager;
+
 
     @Override
     public UserResponseVO createUser(UserDto userDto) {
-        User user = User.builder()
+        Users user = Users.builder()
                 .firstName(userDto.getFirstName())
                 .lastName(userDto.getLastName())
                 .email(userDto.getEmail())
@@ -52,11 +60,26 @@ public class UserServiceImpl implements UserService{
                 .role(userDto.getRole())
                 .salary(0.0)
                 .nationality(userDto.getNationality())
-                .password(userDto.getPassword())
+                .password(passwordEncoder.encode(userDto.getPassword()))
+//                .password((userDto.getPassword()))
                 .address(buildAddress(userDto))
                 .build();
-
         userRepository.save(user);
+        return mapToUserResponse(user);
+    }
+
+    @Override
+    public UserResponseVO authenticateUser(AuthenticateRequest authenticateRequest) {
+        Authentication authentication;
+        authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        authenticateRequest.getEmail(),
+                        authenticateRequest.getPassword()
+                )
+        );
+        var user = userRepository.findByEmailIgnoreCase(authenticateRequest.getEmail())
+                .orElseThrow();
+        SecurityContextHolder.getContext().setAuthentication(authentication);
         return mapToUserResponse(user);
     }
 
@@ -160,11 +183,13 @@ public class UserServiceImpl implements UserService{
                 .country(userDto.getCountry())
                 .build();
     }
-    private UserResponseVO mapToUserResponse(User user){
+    private UserResponseVO mapToUserResponse(Users user){
+        var jwkToken = jwtUtil.generateToken(user.getEmail());
        return UserResponseVO.builder()
                 .name(user.getFirstName())
                 .email(user.getEmail())
                 .role(user.getRole())
+                .token(jwkToken)
                 .build();
     }
     private RoomResponseVO mapToRoomResponse(Room room){
@@ -190,8 +215,8 @@ public class UserServiceImpl implements UserService{
     }
     @Scheduled(cron = "0 */5 * ? * *")
     public void updateStaffWages(){
-        List<User> allUser = userRepository.findAll();
-        for (User user: allUser) {
+        List<Users> allUser = userRepository.findAll();
+        for (Users user: allUser) {
             if (user.getRole().equals(Role.ADMIN)){
                 user.setSalary(user.getSalary() + Role.ADMIN.getSalary());
                 System.out.println(user.getRole() + " salary Paid");

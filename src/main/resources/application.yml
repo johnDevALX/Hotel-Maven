@@ -1,24 +1,35 @@
 server:
-  port: 8000
+  port: ${PORT:8000}
 spring:
   application:
     name: Hotel-Management
   datasource:
-    url: jdbc:mysql://localhost:3306/hotel_project
-    username: root
-    password: EC199859vin$
-    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:postgresql://localhost:5432/ekene
+    username: postgres
+    password: postgres
+    driver-class-name: org.postgresql.Driver
+  #    url: jdbc:mysql://localhost:3306/hotel_project
+#    username: root
+#    password: EC199859vin$
+#    driver-class-name: com.mysql.jdbc.Driver
   jpa:
     hibernate:
       ddl-auto: update
+
     show-sql: true
+    database: postgresql
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
 
 springdoc:
   api-docs:
     path: /api=docs
+  swagger-ui:
     enabled: true
+    path: /swagger-ui.html
+
+
 app:
   cloudConfig:
-    apiKey: 587798771284644
-    apiSecret: WSBLfXrDzcKlqkXP67qe9t2bKmI
-    cloudName:  dedszplf6
+    apiKey: ${API_KEY}
+    apiSecret: ${API_SECRET}
+    cloudName:  ${CLOUD_NAME}

@@ -12,16 +12,8 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @ToString
 @Builder
-@Entity
-public class Customer extends BaseModel {
-    private String firstName;
-    private String lastName;
-    @Column(unique = true)
+public class Customer {
+    private String name;
     private String email;
-    private String gender;
-    private LocalDate DOB;
-    private Long mobile;
-    private String nationality;
-    @Embedded
-    private Address address;
+    private String phone_number;
 }

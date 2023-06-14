@@ -1,7 +1,7 @@
-package com.ekene.hotelmanagement.service;
+package com.ekene.hotelmanagement.service.hotel;
 
-import com.ekene.hotelmanagement.model.ServiceBilling;
-import com.ekene.hotelmanagement.model.ServiceCategory;
+import com.ekene.hotelmanagement.model.hotel.ServiceBilling;
+import com.ekene.hotelmanagement.model.hotel.ServiceCategory;
 import com.ekene.hotelmanagement.payload.ServiceBillingDto;
 import com.ekene.hotelmanagement.payload.ServiceCategoryDto;
 import com.ekene.hotelmanagement.repository.ServiceBillingRepository;
@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 
 @RequiredArgsConstructor
 @Service
-public class HotelServiceImpl implements HotelService{
+public class HotelServiceImpl implements HotelService {
     private final ServiceBillingRepository serviceBillingRepository;
     private final ServiceCategoryRepository serviceCategoryRepository;
 
@@ -42,10 +42,8 @@ public class HotelServiceImpl implements HotelService{
 
     @Override
     public ServiceBillingResponseVO createServiceBilling(ServiceBillingDto serviceBillingDto) {
-        ServiceCategory serviceCategory = serviceCategoryRepository
-                .findByTitleIgnoreCase(serviceBillingDto.getServiceCategory()).get();
         ServiceBilling serviceBilling = ServiceBilling.builder()
-                .serviceCategory(serviceCategory)
+                .hotelService(serviceBillingDto.getHotelService())
                 .itemName(serviceBillingDto.getItemName())
                 .itemCost(serviceBillingDto.getItemCost())
                 .build();
@@ -57,9 +55,7 @@ public class HotelServiceImpl implements HotelService{
     @Override
     public ServiceBillingResponseVO updateServiceBilling(Long id, ServiceBillingDto serviceBillingDto) {
         ServiceBilling serviceBilling = serviceBillingRepository.findById(id).get();
-        ServiceCategory serviceCategory = serviceCategoryRepository
-                .findByTitleIgnoreCase(serviceBillingDto.getServiceCategory()).get();
-        serviceBilling.setServiceCategory(serviceCategory);
+        serviceBilling.setHotelService(serviceBillingDto.getHotelService());
         serviceBilling.setItemName(serviceBillingDto.getItemName());
         serviceBilling.setItemCost(serviceBillingDto.getItemCost());
 

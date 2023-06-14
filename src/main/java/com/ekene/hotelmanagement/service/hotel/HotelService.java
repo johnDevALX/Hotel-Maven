@@ -1,4 +1,4 @@
-package com.ekene.hotelmanagement.service;
+package com.ekene.hotelmanagement.service.hotel;
 
 import com.ekene.hotelmanagement.payload.ServiceBillingDto;
 import com.ekene.hotelmanagement.payload.ServiceCategoryDto;

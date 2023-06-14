@@ -2,7 +2,7 @@ package com.ekene.hotelmanagement.controller;
 
 import com.ekene.hotelmanagement.payload.ServiceBillingDto;
 import com.ekene.hotelmanagement.payload.ServiceCategoryDto;
-import com.ekene.hotelmanagement.service.HotelServiceImpl;
+import com.ekene.hotelmanagement.service.hotel.HotelServiceImpl;
 import com.ekene.hotelmanagement.utility.BaseController;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

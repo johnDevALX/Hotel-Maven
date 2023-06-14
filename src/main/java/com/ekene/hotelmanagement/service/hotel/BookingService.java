@@ -1,7 +1,7 @@
-package com.ekene.hotelmanagement.service;
+package com.ekene.hotelmanagement.service.hotel;
 
 
-import com.ekene.hotelmanagement.model.Booking;
+import com.ekene.hotelmanagement.model.hotel.Booking;
 import com.ekene.hotelmanagement.payload.BookingDto;
 import com.ekene.hotelmanagement.response.BookingResponseVO;
 

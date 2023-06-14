@@ -1,5 +1,6 @@
 package com.ekene.hotelmanagement.payload;
 
+import com.ekene.hotelmanagement.enums.HotelService;
 import lombok.*;
 
 @Setter
@@ -10,7 +11,7 @@ import lombok.*;
 @Builder
 public class ServiceBillingDto {
     private Long id;
-    private String serviceCategory;
+    private HotelService hotelService;
     private String itemName;
     private Double itemCost;
 }

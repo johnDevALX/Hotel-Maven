@@ -1,7 +1,7 @@
 package com.ekene.hotelmanagement.controller;
 
 import com.ekene.hotelmanagement.payload.CustomerOrderDto;
-import com.ekene.hotelmanagement.service.CustomerOrderServiceImpl;
+import com.ekene.hotelmanagement.service.customer.CustomerOrderServiceImpl;
 import com.ekene.hotelmanagement.utility.BaseController;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

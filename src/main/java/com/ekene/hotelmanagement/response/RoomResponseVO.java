@@ -1,6 +1,6 @@
 package com.ekene.hotelmanagement.response;
 
-import com.ekene.hotelmanagement.model.RoomType;
+import com.ekene.hotelmanagement.enums.RoomType;
 import lombok.*;
 
 @Getter

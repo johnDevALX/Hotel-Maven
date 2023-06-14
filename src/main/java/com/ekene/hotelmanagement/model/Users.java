@@ -19,7 +19,7 @@ public class Users extends BaseModel{
     private String email;
     private String gender;
     private Date DOB;
-    private int mobile;
+    private String mobile;
     private String nationality;
     @Embedded
     private Address address;

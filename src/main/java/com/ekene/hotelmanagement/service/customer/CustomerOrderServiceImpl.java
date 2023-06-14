@@ -1,12 +1,16 @@
-package com.ekene.hotelmanagement.service;
+package com.ekene.hotelmanagement.service.customer;
 
 import com.ekene.hotelmanagement.model.*;
+import com.ekene.hotelmanagement.model.hotel.CustomerOrder;
+import com.ekene.hotelmanagement.model.hotel.Room;
+import com.ekene.hotelmanagement.model.hotel.ServiceBilling;
 import com.ekene.hotelmanagement.payload.CustomerOrderDto;
-import com.ekene.hotelmanagement.repository.CustomerRepository;
 import com.ekene.hotelmanagement.repository.CustomerOrderRepository;
 import com.ekene.hotelmanagement.repository.RoomRepository;
 import com.ekene.hotelmanagement.repository.ServiceBillingRepository;
+import com.ekene.hotelmanagement.repository.UserRepository;
 import com.ekene.hotelmanagement.response.CustomerOrderResponseVO;
+import com.ekene.hotelmanagement.service.customer.CustomerOrderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -14,17 +18,17 @@ import org.springframework.stereotype.Service;
 @Service
 public class CustomerOrderServiceImpl implements CustomerOrderService {
     private final CustomerOrderRepository customerOrderRepository;
-    private final CustomerRepository customerRepository;
+    private final UserRepository userRepository;
     private final RoomRepository roomRepository;
     private final ServiceBillingRepository serviceBillingRepository;
 
     @Override
     public CustomerOrderResponseVO makeOrder(CustomerOrderDto orderDto) {
-        Customer customer = customerRepository.findCustomerByEmailIgnoreCase(orderDto.getCustomerEmail()).get();
+        Users user = userRepository.findByEmailIgnoreCase(orderDto.getCustomerEmail()).get();
         Room room = roomRepository.findByTitleIgnoreCase(orderDto.getRoomTitle()).get();
         ServiceBilling serviceBilling = serviceBillingRepository.findByItemNameIgnoreCase(orderDto.getItemName()).get();
         CustomerOrder order = CustomerOrder.builder()
-                .customer(customer)
+                .users(user)
                 .room(room)
                 .serviceBilling(serviceBilling)
                 .numberOfItem(orderDto.getNumberOfItem())
@@ -50,7 +54,7 @@ public class CustomerOrderServiceImpl implements CustomerOrderService {
 
     private CustomerOrderResponseVO mapToOrderResponse(CustomerOrder order){
         return CustomerOrderResponseVO.builder()
-                .customerEmail(order.getCustomer().getEmail())
+                .customerEmail(order.getUsers().getEmail())
                 .roomTitle(order.getRoom().getTitle())
                 .itemName(order.getServiceBilling().getItemName())
                 .numberOfItem(order.getNumberOfItem())

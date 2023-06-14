@@ -1,34 +1,46 @@
-package com.ekene.hotelmanagement.service;
+package com.ekene.hotelmanagement.service.hotel;
 
-import com.ekene.hotelmanagement.model.Booking;
-import com.ekene.hotelmanagement.model.Customer;
-import com.ekene.hotelmanagement.model.Room;
+import com.ekene.hotelmanagement.model.account.HotelAccount;
+import com.ekene.hotelmanagement.model.hotel.Booking;
+import com.ekene.hotelmanagement.model.hotel.Room;
+import com.ekene.hotelmanagement.model.Users;
+import com.ekene.hotelmanagement.model.payment.PaymentDetails;
 import com.ekene.hotelmanagement.repository.BookingRepository;
-import com.ekene.hotelmanagement.repository.CustomerRepository;
+//import com.ekene.hotelmanagement.repository.CustomerRepository;
+import com.ekene.hotelmanagement.repository.PaymentDetailsRepository;
 import com.ekene.hotelmanagement.repository.RoomRepository;
 import com.ekene.hotelmanagement.payload.BookingDto;
+import com.ekene.hotelmanagement.repository.UserRepository;
 import com.ekene.hotelmanagement.response.BookingResponseVO;
+import com.ekene.hotelmanagement.service.payment.PaymentServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-import java.time.LocalDate;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.time.LocalDateTime;
-import java.time.chrono.ChronoLocalDateTime;
 import java.util.List;
 
 @RequiredArgsConstructor
 @Service
-public class BookingServiceImpl implements BookingService{
-    private final CustomerRepository customerRepository;
+public class BookingServiceImpl implements BookingService {
+    private final PaymentServiceImpl paymentService;
     private final RoomRepository roomRepository;
     private final BookingRepository bookingRepository;
+    private final UserRepository userRepository;
+    private final PaymentDetailsRepository paymentDetailsRepository;
+    private final PaymentDetailsServiceImpl paymentDetailsService;
+
+
 
     @Override
+    @Transactional //TODO reminder
     public BookingResponseVO saveBooking(BookingDto bookingDto) {
-        Customer customer = customerRepository.findCustomerByEmailIgnoreCase(bookingDto.getCustomerEmail()).get();
+        HotelAccount hotelAccount = HotelAccount.getInstance();
+        Users user = userRepository.findByEmailIgnoreCase(bookingDto.getCustomerEmail()).get();
         Room room1 = roomRepository.findByTitleIgnoreCase(bookingDto.getRoomTitle()).get();
         Booking booking = Booking.builder()
-                .customer(customer)
+                .user(user)
                 .room(room1)
                 .checkIn(bookingDto.getCheckIn())
                 .checkOut(bookingDto.getCheckOut())
@@ -36,10 +48,18 @@ public class BookingServiceImpl implements BookingService{
                 .build();
          bookingRepository.save(booking);
         Room room = roomRepository.findByTitleIgnoreCase(bookingDto.getRoomTitle()).get();
-        room.setIsAvailable(false);
+        if (validatePayment(bookingDto.getPaymentId())){
+            room.setIsAvailable(false);
+            paymentDetailsService.savePaymentDetails(paymentService.verifyTransaction(bookingDto.getPaymentId()).getData());
+            PaymentDetails paymentDetails = paymentDetailsRepository.findById(String.valueOf(bookingDto.getPaymentId())).get();
+            hotelAccount.setHotelAccountBal(
+                    hotelAccount.getHotelAccountBal() + paymentDetails.getAmount_settled());
+            System.out.println(hotelAccount.getHotelAccountBal());
+        }
         roomRepository.save(room);
         return mapToBookingResponse(booking);
     }
+
 
     @Override
     public List<Booking> getAllBookings() {
@@ -70,5 +90,10 @@ public class BookingServiceImpl implements BookingService{
                 .fromDate(booking.getCheckIn())
                 .toDate(booking.getCheckOut())
                 .build();
+    }
+
+    private Boolean validatePayment(int transactionId){
+        return paymentService.verifyTransaction(transactionId)
+                .getData().getProcessor_response().equalsIgnoreCase("successful");
     }
 }

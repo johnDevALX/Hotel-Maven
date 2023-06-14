@@ -1,4 +1,4 @@
-package com.ekene.hotelmanagement.service;
+package com.ekene.hotelmanagement.service.customer;
 
 import com.ekene.hotelmanagement.payload.CustomerOrderDto;
 import com.ekene.hotelmanagement.response.CustomerOrderResponseVO;

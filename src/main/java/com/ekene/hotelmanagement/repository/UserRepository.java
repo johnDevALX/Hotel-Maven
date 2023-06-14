@@ -1,6 +1,6 @@
 package com.ekene.hotelmanagement.repository;
 
-import com.ekene.hotelmanagement.model.User;
+
 import com.ekene.hotelmanagement.model.Users;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

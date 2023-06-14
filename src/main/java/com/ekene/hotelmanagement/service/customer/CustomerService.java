@@ -1,9 +1,10 @@
-package com.ekene.hotelmanagement.service;
+package com.ekene.hotelmanagement.service.customer;
 
 import com.ekene.hotelmanagement.payload.CustomerDto;
 import com.ekene.hotelmanagement.response.CustomerResponseVO;
+import com.ekene.hotelmanagement.response.UserResponseVO;
 
 public interface CustomerService {
-    CustomerResponseVO saveCustomer(CustomerDto customerDto);
+    UserResponseVO saveCustomer(CustomerDto customerDto);
     String deleteCustomer(Long id);
 }

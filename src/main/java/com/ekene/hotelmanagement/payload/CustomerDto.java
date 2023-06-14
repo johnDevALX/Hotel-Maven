@@ -3,6 +3,7 @@ package com.ekene.hotelmanagement.payload;
 import com.ekene.hotelmanagement.model.Address;
 import lombok.*;
 import java.time.LocalDate;
+import java.util.Date;
 
 @Setter
 @Getter
@@ -16,8 +17,8 @@ public class CustomerDto {
     private String lastName;
     private String email;
     private String gender;
-    private LocalDate DOB;
-    private Long mobile;
+    private Date DOB;
+    private String mobile;
     private String nationality;
     private String street;
     private String city;

@@ -1,5 +1,7 @@
-package com.ekene.hotelmanagement.model;
+package com.ekene.hotelmanagement.model.hotel;
 
+import com.ekene.hotelmanagement.model.BaseModel;
+import com.ekene.hotelmanagement.model.Users;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.OneToOne;
@@ -15,7 +17,7 @@ import java.time.LocalDateTime;
 @Entity
 public class Booking extends BaseModel {
     @OneToOne(cascade = CascadeType.ALL)
-    private Customer customer;
+    private Users user;
     @OneToOne(cascade = CascadeType.ALL)
     private Room room;
     private LocalDateTime checkIn;

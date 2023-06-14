@@ -1,4 +1,4 @@
-package com.ekene.hotelmanagement.service;
+package com.ekene.hotelmanagement.service.user;
 
 import com.ekene.hotelmanagement.payload.AuthenticateRequest;
 import com.ekene.hotelmanagement.payload.RoomDto;

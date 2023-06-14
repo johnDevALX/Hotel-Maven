@@ -1,6 +1,6 @@
 package com.ekene.hotelmanagement.repository;
 
-import com.ekene.hotelmanagement.model.RoomType;
+import com.ekene.hotelmanagement.model.hotel.RoomType;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

@@ -1,5 +1,6 @@
 package com.ekene.hotelmanagement.payload;
 
+import com.ekene.hotelmanagement.enums.RoomType;
 import lombok.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -14,5 +15,5 @@ public class RoomDto {
     private double cost;
     private int bed;
     private int maxOccupants;
-    private String roomTypeDtoTitle;
+    private RoomType roomType;
 }

@@ -1,10 +1,7 @@
 package com.ekene.hotelmanagement.controller;
 
 import com.ekene.hotelmanagement.payload.BookingDto;
-import com.ekene.hotelmanagement.response.ApiResponse;
-import com.ekene.hotelmanagement.response.BookingResponseVO;
-import com.ekene.hotelmanagement.service.BookingService;
-import com.ekene.hotelmanagement.service.BookingServiceImpl;
+import com.ekene.hotelmanagement.service.hotel.BookingServiceImpl;
 import com.ekene.hotelmanagement.utility.BaseController;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

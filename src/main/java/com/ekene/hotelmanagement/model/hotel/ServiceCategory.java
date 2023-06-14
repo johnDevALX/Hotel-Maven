@@ -1,5 +1,6 @@
-package com.ekene.hotelmanagement.model;
+package com.ekene.hotelmanagement.model.hotel;
 
+import com.ekene.hotelmanagement.model.BaseModel;
 import jakarta.persistence.Entity;
 import lombok.*;
 
@@ -10,6 +11,6 @@ import lombok.*;
 @ToString
 @Builder
 @Entity
-public class ServiceCategory extends BaseModel{
+public class ServiceCategory extends BaseModel {
     private String title;
 }

@@ -4,7 +4,7 @@ import com.ekene.hotelmanagement.payload.AuthenticateRequest;
 import com.ekene.hotelmanagement.payload.RoomDto;
 import com.ekene.hotelmanagement.payload.RoomTypeDto;
 import com.ekene.hotelmanagement.payload.UserDto;
-import com.ekene.hotelmanagement.service.UserServiceImpl;
+import com.ekene.hotelmanagement.service.user.UserServiceImpl;
 import com.ekene.hotelmanagement.utility.BaseController;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

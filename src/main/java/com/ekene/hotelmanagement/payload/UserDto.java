@@ -19,7 +19,7 @@ public class UserDto {
     private String email;
     private String gender;
     private Date DOB;
-    private int mobile;
+    private String mobile;
     private String nationality;
     private String street;
     private String city;
@@ -28,5 +28,4 @@ public class UserDto {
     private String country;
     private String password;
     private Role role;
-    private double salary;
 }

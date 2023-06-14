@@ -1,9 +1,9 @@
 package com.ekene.hotelmanagement.repository;
 
-import com.ekene.hotelmanagement.model.hotel.Booking;
+import com.ekene.hotelmanagement.model.payment.PaymentDetails;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface BookingRepository extends JpaRepository<Booking, Long> {
+public interface PaymentDetailsRepository extends JpaRepository<PaymentDetails, String> {
 }

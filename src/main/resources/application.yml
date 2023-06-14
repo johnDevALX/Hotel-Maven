@@ -8,6 +8,24 @@ spring:
     username: postgres
     password: postgres
     driver-class-name: org.postgresql.Driver
+  mail:
+    host: smtp.gmail.com
+    username: jjohn999118@gmail.com
+    password: wuwnjziwgclvzaop
+    port: 465
+    properties:
+      mail:
+        smtp:
+          ssl:
+            enable: true
+          auth: true
+#      "mail.transport.protocol": smtp
+#      "mail.smtp.auth": true
+#      "mail.smtp.starttls.enable": true
+#          timeout: 5000
+#          connection-timeout: 5000
+#          write-timeout: 5000
+
   #    url: jdbc:mysql://localhost:3306/hotel_project
 #    username: root
 #    password: EC199859vin$
@@ -29,7 +47,13 @@ springdoc:
 
 
 app:
-  cloudConfig:
-    apiKey: ${API_KEY}
-    apiSecret: ${API_SECRET}
-    cloudName:  ${CLOUD_NAME}
+  cloud-config:
+    api-key: ${API_KEY}
+    api-secret: ${API_SECRET}
+    cloud-name:  ${CLOUD_NAME}
+  flutter-config:
+    public-key: ${FLUTTER_PUB_KEY}
+    secret-key: ${FLUTTER_SECRET_KEY}
+    init-url: https://api.flutterwave.com/v3/payments
+    verify-url: https://api.flutterwave.com/v3/transactions
+    redirect-url: http://localhost:8000/api/payment/verify

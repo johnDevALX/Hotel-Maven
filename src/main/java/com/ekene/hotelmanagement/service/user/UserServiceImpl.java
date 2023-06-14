@@ -1,10 +1,13 @@
-package com.ekene.hotelmanagement.service;
+package com.ekene.hotelmanagement.service.user;
 
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
 import com.ekene.hotelmanagement.config.security.jwt.JwtUtil;
 import com.ekene.hotelmanagement.enums.Role;
 import com.ekene.hotelmanagement.model.*;
+import com.ekene.hotelmanagement.model.account.HotelAccount;
+import com.ekene.hotelmanagement.model.hotel.Room;
+import com.ekene.hotelmanagement.model.hotel.RoomType;
 import com.ekene.hotelmanagement.payload.AuthenticateRequest;
 import com.ekene.hotelmanagement.repository.RoomRepository;
 import com.ekene.hotelmanagement.repository.RoomTypeRepository;
@@ -24,8 +27,6 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -38,7 +39,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 @Service
 @Slf4j
-public class UserServiceImpl implements UserService{
+public class UserServiceImpl implements UserService {
     private final Cloudinary cloudinary;
     private final UserRepository userRepository;
     private final RoomTypeRepository roomTypeRepository;
@@ -58,10 +59,9 @@ public class UserServiceImpl implements UserService{
                 .gender(userDto.getGender())
                 .mobile(userDto.getMobile())
                 .role(userDto.getRole())
-                .salary(0.0)
                 .nationality(userDto.getNationality())
-//                .password(passwordEncoder.encode(userDto.getPassword()))
-                .password((userDto.getPassword()))
+                .password(passwordEncoder.encode(userDto.getPassword()))
+//                .password((userDto.getPassword()))
                 .address(buildAddress(userDto))
                 .build();
         userRepository.save(user);
@@ -138,11 +138,10 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public RoomResponseVO addRoom(MultipartFile image, RoomDto roomDto) {
-        RoomType roomType = roomTypeRepository.findByTitleIgnoreCase(roomDto.getRoomTypeDtoTitle()).get();
         Room room = Room.builder()
                 .title(roomDto.getTitle())
                 .image(upload(image))
-                .roomType(roomType)
+                .roomType(roomDto.getRoomType())
                 .cost(roomDto.getCost())
                 .bed(roomDto.getBed())
                 .maxOccupants(roomDto.getMaxOccupants())
@@ -156,10 +155,9 @@ public class UserServiceImpl implements UserService{
     @Override
     public RoomResponseVO updateRoom(Long id, MultipartFile image, RoomDto roomDto) {
         Room room = roomRepository.findById(id).get();
-        RoomType roomType = roomTypeRepository.findByTitleIgnoreCase(roomDto.getRoomTypeDtoTitle()).get();
         room.setTitle(roomDto.getTitle());
         room.setImage(upload(image));
-        room.setRoomType(roomType);
+        room.setRoomType(roomDto.getRoomType());
         room.setCost(roomDto.getCost());
         room.setBed(roomDto.getBed());
         room.setMaxOccupants(roomDto.getMaxOccupants());
@@ -220,8 +218,9 @@ public class UserServiceImpl implements UserService{
             throw new RuntimeException(e);
         }
     }
-    @Scheduled(cron = "0 */5 * ? * *")
+    @Scheduled(cron = "0 0 */24 * * *")
     public void updateStaffWages(){
+        HotelAccount hotelAccount = HotelAccount.getInstance();
         List<Users> allUser = userRepository.findAll();
         for (Users user: allUser) {
             if (user.getRole().equals(Role.ADMIN)){
@@ -241,6 +240,11 @@ public class UserServiceImpl implements UserService{
                 user.setSalary(user.getSalary() + Role.SPA_MANAGER.getSalary());
                 System.out.println(user.getRole() + " salary Paid");
             }
+            double totalSalary = Role.ADMIN.getSalary() + Role.BARMAN.getSalary() +
+                    Role.CHEF.getSalary() +  Role.CLEANER.getSalary()
+                    + Role.SPA_MANAGER.getSalary();
+
+            hotelAccount.setHotelAccountBal(hotelAccount.getHotelAccountBal() - totalSalary);
           //  userRepository.save(user);
         }
         System.out.println("All Salaries Paid =====> " + LocalDateTime.now());

@@ -5,6 +5,7 @@ import com.ekene.hotelmanagement.config.cloudinary.AppConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -13,6 +14,12 @@ import java.util.Map;
 public class CloudinaryConfig {
     @Autowired
     private AppConfig appConfig;
+
+    @Bean
+    public RestTemplate restTemplate(){
+
+        return new RestTemplate();
+    }
 
     @Bean
     public Cloudinary cloudinary(){

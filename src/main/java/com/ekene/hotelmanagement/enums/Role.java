@@ -1,7 +1,7 @@
 package com.ekene.hotelmanagement.enums;
 
 public enum Role {
-    CHEF(20.0), CLEANER(15.0), BARMAN(22.0), SPA_MANAGER(25.0), ADMIN(50.0),
+    CHEF(9.0), CLEANER(9.0), BARMAN(9.0), SPA_MANAGER(9.0), ADMIN(15.0),
     CUSTOMER(0.0);
     final Double salary;
 

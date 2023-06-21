@@ -5,13 +5,12 @@ import com.ekene.hotelmanagement.model.hotel.Booking;
 import com.ekene.hotelmanagement.model.hotel.Room;
 import com.ekene.hotelmanagement.model.Users;
 import com.ekene.hotelmanagement.model.payment.PaymentDetails;
-import com.ekene.hotelmanagement.repository.BookingRepository;
+import com.ekene.hotelmanagement.payload.Email;
+import com.ekene.hotelmanagement.repository.*;
 //import com.ekene.hotelmanagement.repository.CustomerRepository;
-import com.ekene.hotelmanagement.repository.PaymentDetailsRepository;
-import com.ekene.hotelmanagement.repository.RoomRepository;
 import com.ekene.hotelmanagement.payload.BookingDto;
-import com.ekene.hotelmanagement.repository.UserRepository;
 import com.ekene.hotelmanagement.response.BookingResponseVO;
+import com.ekene.hotelmanagement.service.email.EmailServiceImpl;
 import com.ekene.hotelmanagement.service.payment.PaymentServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -30,13 +29,15 @@ public class BookingServiceImpl implements BookingService {
     private final UserRepository userRepository;
     private final PaymentDetailsRepository paymentDetailsRepository;
     private final PaymentDetailsServiceImpl paymentDetailsService;
+    private final EmailServiceImpl emailService;
+    private final AccountRepository accountRepository;
 
 
 
     @Override
-    @Transactional //TODO reminder
+    @Transactional
     public BookingResponseVO saveBooking(BookingDto bookingDto) {
-        HotelAccount hotelAccount = HotelAccount.getInstance();
+        HotelAccount hotelAccount = accountRepository.findById(1L).get();
         Users user = userRepository.findByEmailIgnoreCase(bookingDto.getCustomerEmail()).get();
         Room room1 = roomRepository.findByTitleIgnoreCase(bookingDto.getRoomTitle()).get();
         Booking booking = Booking.builder()
@@ -50,11 +51,25 @@ public class BookingServiceImpl implements BookingService {
         Room room = roomRepository.findByTitleIgnoreCase(bookingDto.getRoomTitle()).get();
         if (validatePayment(bookingDto.getPaymentId())){
             room.setIsAvailable(false);
-            paymentDetailsService.savePaymentDetails(paymentService.verifyTransaction(bookingDto.getPaymentId()).getData());
+            String description = "BOOKING";
+            paymentDetailsService.savePaymentDetails(paymentService.verifyTransaction(bookingDto.getPaymentId()).getData(), description);
             PaymentDetails paymentDetails = paymentDetailsRepository.findById(String.valueOf(bookingDto.getPaymentId())).get();
             hotelAccount.setHotelAccountBal(
                     hotelAccount.getHotelAccountBal() + paymentDetails.getAmount_settled());
-            System.out.println(hotelAccount.getHotelAccountBal());
+            accountRepository.save(hotelAccount);
+            System.out.println("From Booking service Class ----> " + hotelAccount.getHotelAccountBal());
+
+            String subject = "Hotel-Maven Booking Transaction Alert";
+            String text = ("Dear " + user.getFirstName() + "\nYour account has been debited "
+                    + paymentDetails.getCharged_amount() + "\n\n\n\nnKindly complete your booking process and enjoy you stay!!!");
+            Email email = Email.builder()
+                    .to(user.getEmail())
+                    .subject(subject)
+                    .text(text)
+                    .build();
+            emailService.sendEmail(email);
+
+            System.out.println("From Booking service Class, email delivered to  ----> " + user.getEmail());
         }
         roomRepository.save(room);
         return mapToBookingResponse(booking);
@@ -66,7 +81,7 @@ public class BookingServiceImpl implements BookingService {
         return bookingRepository.findAll();
     }
 
-    @Scheduled(cron = "0 0 */12 ? * *")
+    @Scheduled(cron = "0 */59 * ? * *")
     public void updateAvailability(){
 
         System.out.println("Print========================>>>>>>>" + LocalDateTime.now());
@@ -95,5 +110,27 @@ public class BookingServiceImpl implements BookingService {
     private Boolean validatePayment(int transactionId){
         return paymentService.verifyTransaction(transactionId)
                 .getData().getProcessor_response().equalsIgnoreCase("successful");
+    }
+
+    @Scheduled(cron = "0 * * * * *")
+    private void preCheckOutMail(){
+        List<Booking> bookingList = bookingRepository.findAll();
+        for (Booking booking: bookingList) {
+            if (LocalDateTime.now().equals(booking.getCheckOut().minusHours(2))){
+                String subject = "Hotel-Maven Pre CheckOut Alert";
+                String text = ("Dear " + booking.getUser().getFirstName() + "\nYour Check Out Time Is At " +
+                        booking.getCheckOut() + "\n\n\n\nPlease let us know if you need any assistance with your luggage" +
+                        "or any questions before you depart!!!");
+
+                Email email = Email.builder()
+                        .to(booking.getUser().getEmail())
+                        .subject(subject)
+                        .text(text)
+                        .build();
+                emailService.sendEmail(email);
+
+                System.out.println("From Booking service Class Pre check out, email delivered to  ----> " + booking.getUser().getEmail());
+            }
+        }
     }
 }

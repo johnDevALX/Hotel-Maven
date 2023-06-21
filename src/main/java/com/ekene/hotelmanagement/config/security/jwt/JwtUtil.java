@@ -1,5 +1,6 @@
 package com.ekene.hotelmanagement.config.security.jwt;
 
+import com.ekene.hotelmanagement.config.cloudinary.AppConfig;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -19,7 +20,8 @@ import java.util.function.Function;
 @Service
 @RequiredArgsConstructor
 public class JwtUtil {
-    private final String SECRET_KEY = "482B4D6251655468576D5A7134743777397A24432646294A404E635266556A58";
+    private final AppConfig appConfig;
+//    private final String SECRET_KEY = "482B4D6251655468576D5A7134743777397A24432646294A404E635266556A58";
 
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
@@ -65,7 +67,7 @@ public class JwtUtil {
     }
 
     private Key getSigningKey() {
-        byte[] keyBytes = Decoders.BASE64.decode(SECRET_KEY);
+        byte[] keyBytes = Decoders.BASE64.decode(appConfig.getJwtConfig().getSecretKey());
         return Keys.hmacShaKeyFor(keyBytes);
     }
 }

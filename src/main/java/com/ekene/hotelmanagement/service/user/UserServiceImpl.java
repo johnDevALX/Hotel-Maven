@@ -8,16 +8,15 @@ import com.ekene.hotelmanagement.model.*;
 import com.ekene.hotelmanagement.model.account.HotelAccount;
 import com.ekene.hotelmanagement.model.hotel.Room;
 import com.ekene.hotelmanagement.model.hotel.RoomType;
-import com.ekene.hotelmanagement.payload.AuthenticateRequest;
+import com.ekene.hotelmanagement.payload.*;
+import com.ekene.hotelmanagement.repository.AccountRepository;
 import com.ekene.hotelmanagement.repository.RoomRepository;
 import com.ekene.hotelmanagement.repository.RoomTypeRepository;
 import com.ekene.hotelmanagement.repository.UserRepository;
-import com.ekene.hotelmanagement.payload.RoomDto;
-import com.ekene.hotelmanagement.payload.RoomTypeDto;
-import com.ekene.hotelmanagement.payload.UserDto;
 import com.ekene.hotelmanagement.response.RoomResponseVO;
 import com.ekene.hotelmanagement.response.RoomTypeResponseVO;
 import com.ekene.hotelmanagement.response.UserResponseVO;
+import com.ekene.hotelmanagement.service.email.EmailServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -47,6 +46,8 @@ public class UserServiceImpl implements UserService {
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
     private final AuthenticationManager authenticationManager;
+    private final EmailServiceImpl emailService;
+    private final AccountRepository accountRepository;
 
 
     @Override
@@ -65,12 +66,22 @@ public class UserServiceImpl implements UserService {
                 .address(buildAddress(userDto))
                 .build();
         userRepository.save(user);
+
+        String subject = "Hotel-Maven Registration Confirmation";
+        String text = ("Welcome to Hotel-Maven " + user.getFirstName() +
+                " /n Please proceed in making a reservation. Thank You!");
+        Email email = Email.builder()
+                .to(user.getEmail())
+                .subject(subject)
+                .text(text)
+                .build();
+        emailService.sendEmail(email);
         return mapToUserResponse(user);
     }
 
     @Override
     public UserResponseVO authenticateUser(AuthenticateRequest authenticateRequest) {
-        log.debug("AUTH REQUEST {}", authenticateRequest);
+        log.info("AUTH REQUEST {}", authenticateRequest);
         System.out.println("AUTH REQUEST  (from service) " + authenticateRequest);
         Authentication authentication;
         authentication = authenticationManager.authenticate(
@@ -79,12 +90,12 @@ public class UserServiceImpl implements UserService {
                         authenticateRequest.getPassword()
                 )
         );
-        log.debug("AUTH REQUEST {}", authenticateRequest);
+        log.info("AUTH REQUEST {}", authenticateRequest);
         System.out.println("AUTH OBJECT" + authentication);
         var user = userRepository.findByEmailIgnoreCase(authenticateRequest.getEmail())
                 .orElseThrow();
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        log.debug("USER {}", authenticateRequest.getEmail());
+        log.info("USER {}", authenticateRequest.getEmail());
         System.out.println("AUTH USER    " + user);
 
         return mapToUserResponse(user);
@@ -220,7 +231,7 @@ public class UserServiceImpl implements UserService {
     }
     @Scheduled(cron = "0 0 */24 * * *")
     public void updateStaffWages(){
-        HotelAccount hotelAccount = HotelAccount.getInstance();
+        HotelAccount hotelAccount = accountRepository.findById(1L).get();
         List<Users> allUser = userRepository.findAll();
         for (Users user: allUser) {
             if (user.getRole().equals(Role.ADMIN)){
@@ -245,7 +256,8 @@ public class UserServiceImpl implements UserService {
                     + Role.SPA_MANAGER.getSalary();
 
             hotelAccount.setHotelAccountBal(hotelAccount.getHotelAccountBal() - totalSalary);
-          //  userRepository.save(user);
+            accountRepository.save(hotelAccount);
+            userRepository.save(user);
         }
         System.out.println("All Salaries Paid =====> " + LocalDateTime.now());
         userRepository.saveAll(allUser);

@@ -1,18 +1,23 @@
 package com.ekene.hotelmanagement.model.account;
 
-import lombok.Getter;
-import lombok.Setter;
+import com.ekene.hotelmanagement.model.BaseModel;
+import jakarta.persistence.Entity;
+import lombok.*;
 
 @Getter
 @Setter
-public class HotelAccount {
-    static HotelAccount hotelAccount = new HotelAccount();
+@Entity
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+public class HotelAccount extends BaseModel {
+    private double hotelAccountBal;
 
-    private double hotelAccountBal = 0.0;
-
-    public static HotelAccount getInstance(){
-        return hotelAccount;
-    }
-
-    private HotelAccount(){}
+//    static HotelAccount hotelAccount = new HotelAccount();
+//
+//    public static HotelAccount getInstance(){
+//        return hotelAccount;
+//    }
+//
+//    private HotelAccount(){}
 }

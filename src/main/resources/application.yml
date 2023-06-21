@@ -57,3 +57,5 @@ app:
     init-url: https://api.flutterwave.com/v3/payments
     verify-url: https://api.flutterwave.com/v3/transactions
     redirect-url: http://localhost:8000/api/payment/verify
+  jwt-config:
+    secret-key: ${SECRET_KEY}

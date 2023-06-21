@@ -13,6 +13,7 @@ import org.springframework.context.annotation.Configuration;
 public class AppConfig {
     private CloudConfig cloudConfig;
     private FlutterConfig flutterConfig;
+    private JwtConfig jwtConfig;
 
     @Data
     public static class CloudConfig{
@@ -27,6 +28,11 @@ public class AppConfig {
         private String initUrl;
         private String verifyUrl;
         private String publicKey;
+        private String secretKey;
+    }
+
+    @Data
+    public static class JwtConfig{
         private String secretKey;
     }
 }

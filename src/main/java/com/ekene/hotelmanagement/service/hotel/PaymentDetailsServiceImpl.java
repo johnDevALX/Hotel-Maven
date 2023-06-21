@@ -13,14 +13,14 @@ public class PaymentDetailsServiceImpl implements PaymentDetailsService{
     private final PaymentDetailsRepository paymentDetailsRepository;
 
     @Override
-    public void savePaymentDetails(PaymentData paymentData) {
+    public void savePaymentDetails(PaymentData paymentData, String desc) {
         PaymentDetails paymentDetails = PaymentDetails.builder()
                 .id(paymentData.getId())
                 .amount_settled(paymentData.getAmount_settled())
                 .payment_type(paymentData.getPayment_type())
                 .charged_amount(paymentData.getCharged_amount())
                 .processor_response(paymentData.getProcessor_response())
-                .payment_description("BOOKING")
+                .payment_description(desc)
                 .build();
         paymentDetailsRepository.save(paymentDetails);
     }

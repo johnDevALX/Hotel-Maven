@@ -9,7 +9,7 @@ import lombok.*;
 @ToString
 @Builder
 public class CustomerOrderDto {
-    private Long id;
+    private int paymentId;
     private String customerEmail;
     private String roomTitle;
     private String itemName;

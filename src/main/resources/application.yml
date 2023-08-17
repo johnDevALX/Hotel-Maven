@@ -4,10 +4,10 @@ spring:
   application:
     name: Hotel-Management
   datasource:
-    url: jdbc:postgresql://localhost:5432/ekene
-    username: postgres
-    password: postgres
-    driver-class-name: org.postgresql.Driver
+    url: ${DB_URL:jdbc:mysql://localhost:3307/ekene_mysql}
+    username: ${DB_USER:ekenesql}
+    password: ${DB_PW:ekenesql}
+    driver-class-name: ${DRIVER_CLASS:com.mysql.jdbc.Driver}
   mail:
     host: smtp.gmail.com
     username: jjohn999118@gmail.com
@@ -19,24 +19,13 @@ spring:
           ssl:
             enable: true
           auth: true
-#      "mail.transport.protocol": smtp
-#      "mail.smtp.auth": true
-#      "mail.smtp.starttls.enable": true
-#          timeout: 5000
-#          connection-timeout: 5000
-#          write-timeout: 5000
-
-  #    url: jdbc:mysql://localhost:3306/hotel_project
-#    username: root
-#    password: EC199859vin$
-#    driver-class-name: com.mysql.jdbc.Driver
   jpa:
     hibernate:
       ddl-auto: update
 
     show-sql: true
-    database: postgresql
-    database-platform: org.hibernate.dialect.PostgreSQLDialect
+#    database: postgresql
+#    database-platform: org.hibernate.dialect.PostgreSQLDialect
 
 springdoc:
   api-docs:
@@ -56,6 +45,6 @@ app:
     secret-key: ${FLUTTER_SECRET_KEY}
     init-url: https://api.flutterwave.com/v3/payments
     verify-url: https://api.flutterwave.com/v3/transactions
-    redirect-url: http://localhost:8000/api/payment/verify
+    redirect-url: http://localhost:3000/bookRoom
   jwt-config:
     secret-key: ${SECRET_KEY}

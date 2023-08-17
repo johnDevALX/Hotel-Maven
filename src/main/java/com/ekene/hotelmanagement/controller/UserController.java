@@ -18,6 +18,7 @@ import static org.springframework.http.HttpStatus.OK;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/user")
+@CrossOrigin("*")
 public class UserController extends BaseController {
     private final UserServiceImpl userService;
 
@@ -39,9 +40,13 @@ public class UserController extends BaseController {
     }
 
     @PostMapping("addRoom")
-    public ResponseEntity<?> addRoom(@RequestBody RoomDto roomDto, @RequestPart MultipartFile image){
-        return getAppResponse(CREATED, "Success", userService.addRoom(image, roomDto));
+    public ResponseEntity<?> addRoom(@RequestBody RoomDto roomDto){
+        return getAppResponse(CREATED, "Success", userService.addRoom(roomDto));
     }
+//    @PostMapping("addRoom")
+//    public ResponseEntity<?> addRoom(@RequestBody RoomDto roomDto, @RequestPart MultipartFile image){
+//        return getAppResponse(CREATED, "Success", userService.addRoom(image, roomDto));
+//    }
 
     @DeleteMapping("deleteRoom/{id}")
     @Transactional
@@ -55,8 +60,8 @@ public class UserController extends BaseController {
     }
 
     @PostMapping("addRoomType")
-    public ResponseEntity<?> addRoomType(@RequestParam RoomTypeDto roomTypeDto , @RequestPart MultipartFile image){
-        return getAppResponse(CREATED, "Success", userService.addRoomType(image, roomTypeDto));
+    public ResponseEntity<?> addRoomType(@RequestParam RoomTypeDto roomTypeDto ){
+        return getAppResponse(CREATED, "Success", userService.addRoomType(roomTypeDto));
     }
 
     @PutMapping("updateRoomType/{id}")

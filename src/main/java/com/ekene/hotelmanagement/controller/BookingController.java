@@ -13,15 +13,17 @@ import static org.springframework.http.HttpStatus.OK;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("api/booking")
+//@CrossOrigin("*")
 public class BookingController extends  BaseController{
     private final BookingServiceImpl bookingServiceImpl;
 
     @PostMapping("save-booking")
     public ResponseEntity<?> saveBooking(@RequestBody BookingDto bookingDto){
+        System.out.println(bookingDto + " from booking Controller");
         return getAppResponse(CREATED , "success" , bookingServiceImpl.saveBooking(bookingDto));
     }
 
-    @GetMapping("")
+    @GetMapping("retrieve-all-bookings")
     public ResponseEntity<?> getAllBookings(){
         return getAppResponse(OK, "Retrieved", bookingServiceImpl.getAllBookings());
     }

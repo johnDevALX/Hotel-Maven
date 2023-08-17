@@ -1,11 +1,81 @@
 version: "3.8"
 
 services:
-  postgres-db:
+  db:
     image: postgres
+    container_name: postgres-db
     environment:
-      POSTGRES_USER: "postgres"
-      POSTGRES_PASSWORD: "postgres"
-      POSTGRES_DB: "ekene"
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=ekene
     ports:
       - "5432:5432"
+
+  mysqldb:
+    image: mysql
+    ports:
+      - "3307:3306"
+    environment:
+      - MYSQL_USER=ekenesql
+      - MYSQL_PASSWORD=ekenesql
+      - MYSQL_ROOT_PASSWORD=ekenesql
+      - MYSQL_DATABASE=ekene_mysql
+    networks:
+      - hotel-maven
+
+  hotel-management:
+    image: ekenedian/app:0.0.1
+    ports:
+      - "9000:8000"
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 50s
+        max_attempts: 3
+        window: 120s
+    depends_on:
+      - db
+    environment:
+      API_KEY: 587798771284644
+      API_SECRET: WSBLfXrDzcKlqkXP67qe9t2bKmI
+      CLOUD_NAME: dedszplf6
+      DB_URL: jdbc:postgresql://192.168.43.88:5432/ekene
+      DB_USER: postgres
+      DB_PW: postgres
+      DRIVER_CLASS: org.postgresql.Driver
+      FLUTTER_PUB_KEY: FLWPUBK_TEST-9201c827d3b2711423509627bd577443-X
+      FLUTTER_SECRET_KEY: FLWSECK_TEST-28c31c0b4edd8416070eeecf953cebca-X
+      PASSWORD: wuwnjziwgclvzaop
+      SECRET_KEY: 482B4D6251655468576D5A7134743777397A24432646294A404E635266556A58
+    networks:
+      - hotel-maven
+
+  hotel-management-2:
+    image: ekenedian/app:0.0.1
+    ports:
+      - "7000:8000"
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 50s
+        max_attempts: 3
+        window: 120s
+    depends_on:
+      - mysqldb
+    environment:
+      API_KEY: 587798771284644
+      API_SECRET: WSBLfXrDzcKlqkXP67qe9t2bKmI
+      CLOUD_NAME: dedszplf6
+      DB_URL: jdbc:mysql://192.168.43.88:3307/ekene_mysql
+      DB_USER: ekenesql
+      DB_PASSWORD: ekenesql
+      DRIVER_CLASS: com.mysql.jdbc.Driver
+      FLUTTER_PUB_KEY: FLWPUBK_TEST-9201c827d3b2711423509627bd577443-X
+      FLUTTER_SECRET_KEY: FLWSECK_TEST-28c31c0b4edd8416070eeecf953cebca-X
+      PASSWORD: wuwnjziwgclvzaop
+      SECRET_KEY: 482B4D6251655468576D5A7134743777397A24432646294A404E635266556A58
+    networks:
+      - hotel-maven
+
+networks:
+  hotel-maven:

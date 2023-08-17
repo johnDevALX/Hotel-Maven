@@ -10,7 +10,6 @@ import com.ekene.hotelmanagement.payload.CustomerOrderDto;
 import com.ekene.hotelmanagement.payload.Email;
 import com.ekene.hotelmanagement.repository.*;
 import com.ekene.hotelmanagement.response.CustomerOrderResponseVO;
-import com.ekene.hotelmanagement.service.customer.CustomerOrderService;
 import com.ekene.hotelmanagement.service.email.EmailServiceImpl;
 import com.ekene.hotelmanagement.service.hotel.PaymentDetailsServiceImpl;
 import com.ekene.hotelmanagement.service.payment.PaymentServiceImpl;

@@ -13,10 +13,11 @@ public interface UserService {
     UserResponseVO createUser(UserDto userDto);
     UserResponseVO authenticateUser(AuthenticateRequest authenticateRequest);
     String deleteUser(Long id);
-    RoomTypeResponseVO addRoomType(  MultipartFile image, RoomTypeDto roomTypeDto);
+    RoomTypeResponseVO addRoomType( RoomTypeDto roomTypeDto);
     RoomTypeResponseVO updateRoomType(Long id, MultipartFile image, RoomTypeDto roomTypeDto);
     String deleteRoomType(Long id);
-    RoomResponseVO addRoom(MultipartFile image, RoomDto roomDto);
+//    RoomResponseVO addRoom(MultipartFile image, RoomDto roomDto);
+    RoomResponseVO addRoom(RoomDto roomDto);
     RoomResponseVO updateRoom (Long id, MultipartFile image, RoomDto roomDto);
     String deleteRoom(Long id);
 

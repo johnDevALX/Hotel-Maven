@@ -16,5 +16,4 @@ public class BookingDto {
     private String roomTitle;
     private LocalDateTime checkIn;
     private LocalDateTime checkOut;
-    private int totalDays;
 }

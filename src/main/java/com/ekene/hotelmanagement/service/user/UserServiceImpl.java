@@ -98,7 +98,7 @@ public class UserServiceImpl implements UserService {
         log.info("USER {}", authenticateRequest.getEmail());
         System.out.println("AUTH USER    " + user);
 
-        return mapToUserResponse(user);
+        return mapToAuthUserResponse(user);
     }
 
     @Override
@@ -115,9 +115,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public RoomTypeResponseVO addRoomType(MultipartFile image, RoomTypeDto roomTypeDto) {
+    public RoomTypeResponseVO addRoomType( RoomTypeDto roomTypeDto) {
         RoomType roomType = RoomType.builder()
-                .image(upload(image))
+//                .image(upload(image))
                 .title(roomTypeDto.getTitle())
                 .build();
 
@@ -128,7 +128,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public RoomTypeResponseVO updateRoomType(Long id, MultipartFile image, RoomTypeDto roomTypeDto) {
         RoomType roomType1 = roomTypeRepository.findById(id).get();
-        roomType1.setImage(upload(image));
+//        roomType1.setImage(upload(image));
         roomType1.setTitle(roomTypeDto.getTitle());
         roomTypeRepository.save(roomType1);
         return mapToRoomTypeResponse(roomType1);
@@ -148,10 +148,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public RoomResponseVO addRoom(MultipartFile image, RoomDto roomDto) {
+    public RoomResponseVO addRoom(RoomDto roomDto) {
+//        MultipartFile image,
         Room room = Room.builder()
                 .title(roomDto.getTitle())
-                .image(upload(image))
+//                .image(upload(image))
                 .roomType(roomDto.getRoomType())
                 .cost(roomDto.getCost())
                 .bed(roomDto.getBed())
@@ -200,6 +201,13 @@ public class UserServiceImpl implements UserService {
                 .build();
     }
     private UserResponseVO mapToUserResponse(Users user){
+       return UserResponseVO.builder()
+                .name(user.getFirstName())
+                .email(user.getEmail())
+                .role(user.getRole())
+                .build();
+    }
+    private UserResponseVO mapToAuthUserResponse(Users user){
         var jwkToken = jwtUtil.generateToken(user.getEmail());
        return UserResponseVO.builder()
                 .name(user.getFirstName())

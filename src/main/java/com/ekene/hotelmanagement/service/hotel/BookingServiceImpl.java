@@ -13,6 +13,7 @@ import com.ekene.hotelmanagement.response.BookingResponseVO;
 import com.ekene.hotelmanagement.service.email.EmailServiceImpl;
 import com.ekene.hotelmanagement.service.payment.PaymentServiceImpl;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,6 +23,7 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @Service
+@Slf4j
 public class BookingServiceImpl implements BookingService {
     private final PaymentServiceImpl paymentService;
     private final RoomRepository roomRepository;
@@ -47,6 +49,7 @@ public class BookingServiceImpl implements BookingService {
                 .checkOut(bookingDto.getCheckOut())
                 .totalDays(bookingDto.getCheckOut().getDayOfWeek().getValue() - bookingDto.getCheckIn().getDayOfWeek().getValue())
                 .build();
+        log.info("Booking=========> {}", booking);
          bookingRepository.save(booking);
         Room room = roomRepository.findByTitleIgnoreCase(bookingDto.getRoomTitle()).get();
         if (validatePayment(bookingDto.getPaymentId())){
@@ -113,7 +116,7 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Scheduled(cron = "0 * * * * *")
-    private void preCheckOutMail(){
+    public void preCheckOutMail(){
         List<Booking> bookingList = bookingRepository.findAll();
         for (Booking booking: bookingList) {
             if (LocalDateTime.now().equals(booking.getCheckOut().minusHours(2))){

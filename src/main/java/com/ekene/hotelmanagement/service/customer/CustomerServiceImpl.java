@@ -1,12 +1,10 @@
 package com.ekene.hotelmanagement.service.customer;
 
-import com.ekene.hotelmanagement.config.security.jwt.JwtUtil;
 import com.ekene.hotelmanagement.enums.Role;
 import com.ekene.hotelmanagement.model.Address;
 import com.ekene.hotelmanagement.model.Users;
 import com.ekene.hotelmanagement.payload.CustomerDto;
 import com.ekene.hotelmanagement.repository.UserRepository;
-import com.ekene.hotelmanagement.response.CustomerResponseVO;
 import com.ekene.hotelmanagement.response.UserResponseVO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

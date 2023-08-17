@@ -12,6 +12,5 @@ import lombok.*;
 @Builder
 @Entity
 public class RoomType extends BaseModel {
-    private String image;
     private String title;
 }
